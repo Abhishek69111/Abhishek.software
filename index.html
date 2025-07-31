@@ -1,0 +1,2072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AttendanceHub Pro - Employee Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        /* Rich Gradient Backgrounds */
+        .gradient-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .gradient-success { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); }
+        .gradient-danger { background: linear-gradient(135deg, #fc466b 0%, #3f5efb 100%); }
+        .gradient-warning { background: linear-gradient(135deg, #fdbb2d 0%, #22c1c3 100%); }
+        .gradient-info { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        
+        /* Glass Morphism Effect */
+        .glass {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        
+        .glass-dark {
+            background: rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Enhanced Shadows */
+        .shadow-luxury { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
+        .shadow-card { box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05); }
+        .shadow-button { box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); }
+        
+        /* Animations */
+        .animate-fade-in { animation: fadeIn 0.6s ease-out; }
+        .animate-slide-up { animation: slideUp 0.5s ease-out; }
+        .animate-bounce-in { animation: bounceIn 0.8s ease-out; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes bounceIn {
+            0% { opacity: 0; transform: scale(0.3); }
+            50% { opacity: 1; transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        
+        /* Hover Effects */
+        .hover-lift { transition: all 0.3s ease; }
+        .hover-lift:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15); }
+        
+        /* Status Badges */
+        .status-present { background: linear-gradient(135deg, #11998e, #38ef7d); }
+        .status-absent { background: linear-gradient(135deg, #fc466b, #3f5efb); }
+        .status-late { background: linear-gradient(135deg, #fdbb2d, #22c1c3); }
+        
+        /* Mobile Optimizations */
+        @media (max-width: 768px) {
+            .mobile-padding { padding: 1rem; }
+            .mobile-text { font-size: 0.875rem; }
+            .mobile-hide { display: none; }
+            .mobile-full { width: 100%; }
+            .mobile-stack { flex-direction: column; }
+            .mobile-center { text-align: center; }
+        }
+        
+        /* Desktop Enhancements */
+        @media (min-width: 1024px) {
+            .desktop-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+            .desktop-sidebar { width: 280px; }
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.3); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.5); }
+        
+        /* Rich Button Styles */
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-primary:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn-primary:hover:before {
+            left: 100%;
+        }
+        
+        /* Rich Card Design */
+        .rich-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .rich-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Mobile Bottom Navigation */
+        .mobile-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            z-index: 1000;
+        }
+        
+        @media (min-width: 768px) {
+            .mobile-nav { display: none; }
+        }
+        
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            font-size: 24px;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+        
+        .fab:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.6);
+        }
+        
+        @media (min-width: 768px) {
+            .fab { display: none; }
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Mobile Header -->
+    <header class="md:hidden glass-dark text-white p-4 sticky top-0 z-50">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-full gradient-primary flex items-center justify-center">
+                    <i class="fas fa-users-cog text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold">AttendanceHub</h1>
+                    <p class="text-xs opacity-75" id="mobileDateDisplay"></p>
+                </div>
+            </div>
+            <button onclick="toggleMobileMenu()" class="p-2 rounded-lg glass">
+                <i class="fas fa-bars text-lg"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Desktop Header -->
+    <header class="hidden md:block glass-dark text-white shadow-luxury">
+        <div class="container mx-auto px-6 py-6">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="w-16 h-16 rounded-2xl gradient-primary flex items-center justify-center shadow-button">
+                        <i class="fas fa-users-cog text-2xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-3xl font-bold bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">
+                            AttendanceHub Pro
+                        </h1>
+                        <p class="text-blue-200 font-medium">Advanced Employee Management System</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <div class="text-right">
+                        <p class="text-sm opacity-90" id="desktopDateDisplay"></p>
+                        <p class="text-xs opacity-75">Real-time Tracking</p>
+                    </div>
+                    <button onclick="showAddEmployeeModal()" class="btn-primary px-6 py-3 rounded-xl shadow-button flex items-center space-x-2">
+                        <i class="fas fa-user-plus"></i>
+                        <span class="font-semibold">Add Employee</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobileMenuOverlay" class="md:hidden fixed inset-0 bg-black bg-opacity-50 z-40 hidden">
+        <div class="fixed top-0 right-0 h-full w-80 glass text-white p-6 transform translate-x-full transition-transform duration-300" id="mobileMenu">
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-xl font-bold">Menu</h2>
+                <button onclick="toggleMobileMenu()" class="p-2 rounded-lg glass-dark">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <nav class="space-y-4">
+                <button onclick="showTab('daily'); toggleMobileMenu();" class="w-full text-left p-4 rounded-xl glass-dark hover:bg-white hover:bg-opacity-20 transition-all duration-200">
+                    <i class="fas fa-calendar-day mr-3"></i>Daily Attendance
+                </button>
+                <button onclick="showTab('monthly'); toggleMobileMenu();" class="w-full text-left p-4 rounded-xl glass-dark hover:bg-white hover:bg-opacity-20 transition-all duration-200">
+                    <i class="fas fa-calendar-alt mr-3"></i>Monthly View
+                </button>
+                <button onclick="showTab('reports'); toggleMobileMenu();" class="w-full text-left p-4 rounded-xl glass-dark hover:bg-white hover:bg-opacity-20 transition-all duration-200">
+                    <i class="fas fa-chart-bar mr-3"></i>Reports
+                </button>
+                <button onclick="showTab('history'); toggleMobileMenu();" class="w-full text-left p-4 rounded-xl glass-dark hover:bg-white hover:bg-opacity-20 transition-all duration-200">
+                    <i class="fas fa-history mr-3"></i>History
+                </button>
+                <button onclick="showAddEmployeeModal(); toggleMobileMenu();" class="w-full text-left p-4 rounded-xl gradient-primary hover:opacity-90 transition-all duration-200">
+                    <i class="fas fa-user-plus mr-3"></i>Add Employee
+                </button>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 md:px-6 py-6 md:py-8 pb-24 md:pb-8">
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8">
+            <!-- Total Employees Card -->
+            <div class="rich-card p-4 md:p-6 hover-lift animate-fade-in">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-xs md:text-sm font-medium mb-1">Total Employees</p>
+                        <p class="text-2xl md:text-3xl font-bold text-gray-800" id="totalEmployees">0</p>
+                        <p class="text-xs text-green-600 font-medium mt-1">
+                            <i class="fas fa-arrow-up mr-1"></i>Active
+                        </p>
+                    </div>
+                    <div class="w-12 h-12 md:w-16 md:h-16 rounded-2xl gradient-info flex items-center justify-center shadow-button">
+                        <i class="fas fa-users text-white text-lg md:text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Present Today Card -->
+            <div class="rich-card p-4 md:p-6 hover-lift animate-fade-in" style="animation-delay: 0.1s">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-xs md:text-sm font-medium mb-1">Present Today</p>
+                        <p class="text-2xl md:text-3xl font-bold text-green-600" id="presentCount">0</p>
+                        <p class="text-xs text-gray-500 font-medium mt-1">
+                            <i class="fas fa-check-circle mr-1"></i>On Time
+                        </p>
+                    </div>
+                    <div class="w-12 h-12 md:w-16 md:h-16 rounded-2xl gradient-success flex items-center justify-center shadow-button">
+                        <i class="fas fa-check-circle text-white text-lg md:text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Absent Today Card -->
+            <div class="rich-card p-4 md:p-6 hover-lift animate-fade-in" style="animation-delay: 0.2s">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-xs md:text-sm font-medium mb-1">Absent Today</p>
+                        <p class="text-2xl md:text-3xl font-bold text-red-600" id="absentCount">0</p>
+                        <p class="text-xs text-gray-500 font-medium mt-1">
+                            <i class="fas fa-times-circle mr-1"></i>Missing
+                        </p>
+                    </div>
+                    <div class="w-12 h-12 md:w-16 md:h-16 rounded-2xl gradient-danger flex items-center justify-center shadow-button">
+                        <i class="fas fa-times-circle text-white text-lg md:text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Late Arrivals Card -->
+            <div class="rich-card p-4 md:p-6 hover-lift animate-fade-in" style="animation-delay: 0.3s">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-xs md:text-sm font-medium mb-1">Late Arrivals</p>
+                        <p class="text-2xl md:text-3xl font-bold text-yellow-600" id="lateCount">0</p>
+                        <p class="text-xs text-gray-500 font-medium mt-1">
+                            <i class="fas fa-clock mr-1"></i>Delayed
+                        </p>
+                    </div>
+                    <div class="w-12 h-12 md:w-16 md:h-16 rounded-2xl gradient-warning flex items-center justify-center shadow-button">
+                        <i class="fas fa-clock text-white text-lg md:text-xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Desktop Navigation Tabs -->
+        <div class="hidden md:block rich-card mb-6 animate-slide-up">
+            <div class="flex border-b border-gray-200">
+                <button onclick="showTab('daily')" id="dailyTab" class="flex-1 px-6 py-4 text-center font-semibold text-blue-600 border-b-2 border-blue-600 bg-blue-50 transition-all duration-200">
+                    <i class="fas fa-calendar-day mr-2"></i>Daily Attendance
+                </button>
+                <button onclick="showTab('monthly')" id="monthlyTab" class="flex-1 px-6 py-4 text-center font-semibold text-gray-500 hover:text-gray-700 hover:bg-gray-50 transition-all duration-200">
+                    <i class="fas fa-calendar-alt mr-2"></i>Monthly View
+                </button>
+                <button onclick="showTab('reports')" id="reportsTab" class="flex-1 px-6 py-4 text-center font-semibold text-gray-500 hover:text-gray-700 hover:bg-gray-50 transition-all duration-200">
+                    <i class="fas fa-chart-bar mr-2"></i>Monthly Reports
+                </button>
+                <button onclick="showTab('history')" id="historyTab" class="flex-1 px-6 py-4 text-center font-semibold text-gray-500 hover:text-gray-700 hover:bg-gray-50 transition-all duration-200">
+                    <i class="fas fa-history mr-2"></i>Historical Data
+                </button>
+            </div>
+        </div>
+
+        <!-- Daily Attendance Tab -->
+        <div id="dailyContent" class="tab-content animate-fade-in">
+            <div class="rich-card overflow-hidden">
+                <!-- Desktop Header -->
+                <div class="hidden md:block px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-purple-50">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-800">Today's Attendance</h2>
+                            <p class="text-sm text-gray-600 mt-1">Real-time employee attendance tracking</p>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <div class="relative">
+                                <input type="text" id="searchInput" placeholder="Search employees..." 
+                                    class="pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm">
+                                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            </div>
+                            <button onclick="markAllPresent()" class="btn-primary px-4 py-2 rounded-xl shadow-button flex items-center space-x-2">
+                                <i class="fas fa-check-double"></i>
+                                <span class="hidden lg:inline">Mark All Present</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile Header -->
+                <div class="md:hidden px-4 py-3 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-purple-50">
+                    <h2 class="text-lg font-bold text-gray-800 mb-2">Today's Attendance</h2>
+                    <div class="flex space-x-2">
+                        <div class="relative flex-1">
+                            <input type="text" id="mobileSearchInput" placeholder="Search..." 
+                                class="w-full pl-8 pr-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <i class="fas fa-search absolute left-2.5 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm"></i>
+                        </div>
+                        <button onclick="markAllPresent()" class="btn-primary px-3 py-2 rounded-lg text-sm">
+                            <i class="fas fa-check-double"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Employee Table/Cards -->
+                <div class="overflow-x-auto">
+                    <!-- Desktop Table -->
+                    <table class="hidden md:table w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Employee</th>
+                                <th class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Department</th>
+                                <th class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Time Details</th>
+                                <th class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="employeeTableBody" class="bg-white divide-y divide-gray-200">
+                            <!-- Employee rows will be inserted here -->
+                        </tbody>
+                    </table>
+
+                    <!-- Mobile Cards -->
+                    <div id="mobileEmployeeCards" class="md:hidden space-y-4 p-4">
+                        <!-- Mobile employee cards will be inserted here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monthly View Tab -->
+        <div id="monthlyContent" class="tab-content hidden animate-fade-in">
+            <div class="rich-card overflow-hidden">
+                <div class="px-4 md:px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-green-50 to-blue-50">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h2 class="text-lg md:text-xl font-bold text-gray-800">Monthly Calendar</h2>
+                            <p class="text-sm text-gray-600 mt-1 hidden md:block">Visual attendance overview</p>
+                        </div>
+                        <div class="flex items-center space-x-2 md:space-x-4">
+                            <button onclick="previousMonth()" class="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-all duration-200">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <span id="currentMonth" class="text-sm md:text-lg font-bold text-gray-800 min-w-[120px] md:min-w-[200px] text-center"></span>
+                            <button onclick="nextMonth()" class="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-all duration-200">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 md:p-6">
+                    <div id="monthlyCalendar" class="overflow-x-auto">
+                        <!-- Monthly calendar will be inserted here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monthly Reports Tab -->
+        <div id="reportsContent" class="tab-content hidden animate-fade-in">
+            <div class="rich-card overflow-hidden">
+                <div class="px-4 md:px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-purple-50 to-pink-50">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between space-y-4 md:space-y-0">
+                        <div>
+                            <h2 class="text-lg md:text-xl font-bold text-gray-800">Monthly Reports</h2>
+                            <p class="text-sm text-gray-600 mt-1 hidden md:block">Comprehensive attendance analytics</p>
+                        </div>
+                        <div class="flex flex-col md:flex-row items-stretch md:items-center space-y-2 md:space-y-0 md:space-x-4">
+                            <select id="reportMonth" onchange="generateReport()" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
+                                <!-- Month options will be populated -->
+                            </select>
+                            <div class="flex space-x-2">
+                                <button onclick="exportReport('csv')" class="flex-1 md:flex-none btn-primary px-3 py-2 rounded-lg text-sm shadow-button">
+                                    <i class="fas fa-file-csv mr-1"></i>CSV
+                                </button>
+                                <button onclick="exportReport('excel')" class="flex-1 md:flex-none bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg text-sm shadow-button transition-all duration-200">
+                                    <i class="fas fa-file-excel mr-1"></i>Excel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 md:p-6">
+                    <div id="monthlyReport">
+                        <!-- Monthly report will be inserted here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Historical Data Tab -->
+        <div id="historyContent" class="tab-content hidden animate-fade-in">
+            <div class="rich-card overflow-hidden">
+                <div class="px-4 md:px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-indigo-50 to-cyan-50">
+                    <div class="flex flex-col space-y-4">
+                        <div>
+                            <h2 class="text-lg md:text-xl font-bold text-gray-800">Historical Data</h2>
+                            <p class="text-sm text-gray-600 mt-1 hidden md:block">Complete attendance history and analytics</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <select id="historyEmployee" onchange="loadEmployeeHistory()" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
+                                <option value="">Select Employee</option>
+                            </select>
+                            <input type="date" id="historyFromDate" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
+                            <input type="date" id="historyToDate" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
+                            <div class="flex space-x-2">
+                                <button onclick="filterHistoryData()" class="flex-1 btn-primary px-3 py-2 rounded-lg text-sm shadow-button">
+                                    <i class="fas fa-filter mr-1"></i>Filter
+                                </button>
+                                <button onclick="exportHistoryData('excel')" class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg text-sm shadow-button transition-all duration-200">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 md:p-6">
+                    <div id="historyData">
+                        <!-- Historical data will be inserted here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-nav">
+        <div class="flex items-center justify-around py-2">
+            <button onclick="showTab('daily')" class="flex flex-col items-center p-2 text-gray-600 hover:text-blue-600 transition-colors duration-200" id="mobileDaily">
+                <i class="fas fa-calendar-day text-lg mb-1"></i>
+                <span class="text-xs font-medium">Daily</span>
+            </button>
+            <button onclick="showTab('monthly')" class="flex flex-col items-center p-2 text-gray-600 hover:text-blue-600 transition-colors duration-200" id="mobileMonthly">
+                <i class="fas fa-calendar-alt text-lg mb-1"></i>
+                <span class="text-xs font-medium">Monthly</span>
+            </button>
+            <button onclick="showTab('reports')" class="flex flex-col items-center p-2 text-gray-600 hover:text-blue-600 transition-colors duration-200" id="mobileReports">
+                <i class="fas fa-chart-bar text-lg mb-1"></i>
+                <span class="text-xs font-medium">Reports</span>
+            </button>
+            <button onclick="showTab('history')" class="flex flex-col items-center p-2 text-gray-600 hover:text-blue-600 transition-colors duration-200" id="mobileHistory">
+                <i class="fas fa-history text-lg mb-1"></i>
+                <span class="text-xs font-medium">History</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Floating Action Button -->
+    <button onclick="showAddEmployeeModal()" class="fab">
+        <i class="fas fa-plus"></i>
+    </button>
+
+    <!-- Login Time Modal -->
+    <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 p-4">
+        <div class="rich-card max-w-md w-full animate-bounce-in">
+            <div class="p-6 md:p-8">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xl font-bold text-gray-800">
+                        <i class="fas fa-sign-in-alt text-blue-600 mr-2"></i>Employee Login
+                    </h3>
+                    <button onclick="hideLoginModal()" class="text-gray-400 hover:text-gray-600 p-2 rounded-lg hover:bg-gray-100 transition-all duration-200">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <div class="mb-6 p-4 bg-blue-50 rounded-xl">
+                    <p class="text-gray-700 mb-1">Employee: <span id="loginEmployeeName" class="font-bold text-blue-600"></span></p>
+                    <p class="text-gray-700">Date: <span id="loginDate" class="font-semibold"></span></p>
+                </div>
+                <form onsubmit="recordLogin(event)">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Login Time</label>
+                            <input type="time" id="loginTime" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Status</label>
+                            <select id="loginStatus" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm">
+                                <option value="present">On Time</option>
+                                <option value="late">Late Arrival</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Notes (Optional)</label>
+                            <textarea id="loginNotes" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm" placeholder="Add any notes..."></textarea>
+                        </div>
+                    </div>
+                    <div class="flex space-x-4 mt-8">
+                        <button type="button" onclick="hideLoginModal()" class="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-all duration-200 font-semibold">
+                            Cancel
+                        </button>
+                        <button type="submit" class="flex-1 btn-primary px-4 py-3 rounded-xl shadow-button font-semibold">
+                            <i class="fas fa-sign-in-alt mr-2"></i>Record Login
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout Time Modal -->
+    <div id="logoutModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 p-4">
+        <div class="rich-card max-w-md w-full animate-bounce-in">
+            <div class="p-6 md:p-8">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xl font-bold text-gray-800">
+                        <i class="fas fa-sign-out-alt text-purple-600 mr-2"></i>Employee Logout
+                    </h3>
+                    <button onclick="hideLogoutModal()" class="text-gray-400 hover:text-gray-600 p-2 rounded-lg hover:bg-gray-100 transition-all duration-200">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <div class="mb-6 p-4 bg-purple-50 rounded-xl">
+                    <p class="text-gray-700 mb-1">Employee: <span id="logoutEmployeeName" class="font-bold text-purple-600"></span></p>
+                    <p class="text-gray-700 mb-1">Date: <span id="logoutDate" class="font-semibold"></span></p>
+                    <p class="text-gray-700">Login Time: <span id="logoutLoginTime" class="font-semibold text-green-600"></span></p>
+                </div>
+                <form onsubmit="recordLogout(event)">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Logout Time</label>
+                            <input type="time" id="logoutTime" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent shadow-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Total Hours</label>
+                            <input type="text" id="totalHours" readonly class="w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-50 text-gray-600 font-semibold">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Notes (Optional)</label>
+                            <textarea id="logoutNotes" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent shadow-sm" placeholder="Add any notes..."></textarea>
+                        </div>
+                    </div>
+                    <div class="flex space-x-4 mt-8">
+                        <button type="button" onclick="hideLogoutModal()" class="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-all duration-200 font-semibold">
+                            Cancel
+                        </button>
+                        <button type="submit" class="flex-1 bg-purple-600 hover:bg-purple-700 text-white px-4 py-3 rounded-xl shadow-button transition-all duration-200 font-semibold">
+                            <i class="fas fa-sign-out-alt mr-2"></i>Record Logout
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Time Modal -->
+    <div id="editTimeModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 p-4">
+        <div class="rich-card max-w-md w-full animate-bounce-in">
+            <div class="p-6 md:p-8">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xl font-bold text-gray-800">
+                        <i class="fas fa-edit text-yellow-600 mr-2"></i>Edit Attendance
+                    </h3>
+                    <button onclick="hideEditTimeModal()" class="text-gray-400 hover:text-gray-600 p-2 rounded-lg hover:bg-gray-100 transition-all duration-200">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <div class="mb-6 p-4 bg-yellow-50 rounded-xl">
+                    <p class="text-gray-700 mb-1">Employee: <span id="editEmployeeName" class="font-bold text-yellow-600"></span></p>
+                    <p class="text-gray-700">Date: <span id="editDate" class="font-semibold"></span></p>
+                </div>
+                <form onsubmit="updateAttendanceTime(event)">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Login Time</label>
+                            <input type="time" id="editLoginTime" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-500 focus:border-transparent shadow-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Logout Time</label>
+                            <input type="time" id="editLogoutTime" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-500 focus:border-transparent shadow-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Status</label>
+                            <select id="editStatus" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-500 focus:border-transparent shadow-sm">
+                                <option value="present">Present</option>
+                                <option value="late">Late</option>
+                                <option value="absent">Absent</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Notes</label>
+                            <textarea id="editNotes" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-500 focus:border-transparent shadow-sm" placeholder="Add any notes..."></textarea>
+                        </div>
+                    </div>
+                    <div class="flex space-x-4 mt-8">
+                        <button type="button" onclick="hideEditTimeModal()" class="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-all duration-200 font-semibold">
+                            Cancel
+                        </button>
+                        <button type="submit" class="flex-1 bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-3 rounded-xl shadow-button transition-all duration-200 font-semibold">
+                            <i class="fas fa-save mr-2"></i>Update
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Employee Modal -->
+    <div id="addEmployeeModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 p-4">
+        <div class="rich-card max-w-md w-full animate-bounce-in">
+            <div class="p-6 md:p-8">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xl font-bold text-gray-800">
+                        <i class="fas fa-user-plus text-green-600 mr-2"></i>Add New Employee
+                    </h3>
+                    <button onclick="hideAddEmployeeModal()" class="text-gray-400 hover:text-gray-600 p-2 rounded-lg hover:bg-gray-100 transition-all duration-200">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <form onsubmit="addEmployee(event)">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Full Name</label>
+                            <input type="text" id="employeeName" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Employee ID</label>
+                            <input type="text" id="employeeId" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Department</label>
+                            <select id="employeeDepartment" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm">
+                                <option value="">Select Department</option>
+                                <option value="Human Resources">Human Resources</option>
+                                <option value="Engineering">Engineering</option>
+                                <option value="Marketing">Marketing</option>
+                                <option value="Sales">Sales</option>
+                                <option value="Finance">Finance</option>
+                                <option value="Operations">Operations</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Position</label>
+                            <input type="text" id="employeePosition" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Date of Joining</label>
+                            <input type="date" id="employeeDateOfJoining" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm">
+                        </div>
+                    </div>
+                    <div class="flex space-x-4 mt-8">
+                        <button type="button" onclick="hideAddEmployeeModal()" class="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-all duration-200 font-semibold">
+                            Cancel
+                        </button>
+                        <button type="submit" class="flex-1 bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-xl shadow-button transition-all duration-200 font-semibold">
+                            <i class="fas fa-plus mr-2"></i>Add Employee
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let employees = JSON.parse(localStorage.getItem('employees')) || [];
+        let attendance = JSON.parse(localStorage.getItem('attendance')) || {};
+        let currentViewDate = new Date();
+        let activeTab = 'daily';
+        let currentEditingEmployee = null;
+
+        // Initialize the application
+        function init() {
+            updateCurrentDate();
+            renderEmployeeTable();
+            updateStats();
+            setupSearch();
+            populateReportMonths();
+            updateMonthDisplay();
+            updateMobileNavigation();
+        }
+
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const overlay = document.getElementById('mobileMenuOverlay');
+            const menu = document.getElementById('mobileMenu');
+            
+            if (overlay.classList.contains('hidden')) {
+                overlay.classList.remove('hidden');
+                setTimeout(() => {
+                    menu.classList.remove('translate-x-full');
+                }, 10);
+            } else {
+                menu.classList.add('translate-x-full');
+                setTimeout(() => {
+                    overlay.classList.add('hidden');
+                }, 300);
+            }
+        }
+
+        // Update mobile navigation active state
+        function updateMobileNavigation() {
+            const buttons = ['mobileDaily', 'mobileMonthly', 'mobileReports', 'mobileHistory'];
+            buttons.forEach(id => {
+                const button = document.getElementById(id);
+                if (button) {
+                    button.classList.remove('text-blue-600');
+                    button.classList.add('text-gray-600');
+                }
+            });
+            
+            const activeButton = document.getElementById('mobile' + activeTab.charAt(0).toUpperCase() + activeTab.slice(1));
+            if (activeButton) {
+                activeButton.classList.remove('text-gray-600');
+                activeButton.classList.add('text-blue-600');
+            }
+        }
+
+        // Tab management
+        function showTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            
+            // Remove active class from all desktop tabs
+            document.querySelectorAll('[id$="Tab"]').forEach(tab => {
+                tab.classList.remove('text-blue-600', 'border-blue-600', 'bg-blue-50');
+                tab.classList.add('text-gray-500');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName + 'Content').classList.remove('hidden');
+            
+            // Add active class to selected desktop tab
+            const activeTabElement = document.getElementById(tabName + 'Tab');
+            if (activeTabElement) {
+                activeTabElement.classList.remove('text-gray-500');
+                activeTabElement.classList.add('text-blue-600', 'border-blue-600', 'bg-blue-50');
+            }
+            
+            activeTab = tabName;
+            updateMobileNavigation();
+            
+            // Load content based on tab
+            if (tabName === 'monthly') {
+                renderMonthlyCalendar();
+            } else if (tabName === 'reports') {
+                generateReport();
+            } else if (tabName === 'history') {
+                populateEmployeeDropdown();
+                loadAllHistoryData();
+            }
+        }
+
+        // Update current date display
+        function updateCurrentDate() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            const dateString = now.toLocaleDateString('en-US', options);
+            
+            document.getElementById('desktopDateDisplay').textContent = dateString;
+            document.getElementById('mobileDateDisplay').textContent = now.toLocaleDateString('en-US', { 
+                month: 'short', 
+                day: 'numeric' 
+            });
+        }
+
+        // Show add employee modal
+        function showAddEmployeeModal() {
+            document.getElementById('addEmployeeModal').classList.remove('hidden');
+            document.getElementById('addEmployeeModal').classList.add('flex');
+        }
+
+        // Hide add employee modal
+        function hideAddEmployeeModal() {
+            document.getElementById('addEmployeeModal').classList.add('hidden');
+            document.getElementById('addEmployeeModal').classList.remove('flex');
+            document.getElementById('employeeName').value = '';
+            document.getElementById('employeeId').value = '';
+            document.getElementById('employeeDepartment').value = '';
+            document.getElementById('employeePosition').value = '';
+            document.getElementById('employeeDateOfJoining').value = '';
+        }
+
+        // Add new employee
+        function addEmployee(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('employeeName').value;
+            const id = document.getElementById('employeeId').value;
+            const department = document.getElementById('employeeDepartment').value;
+            const position = document.getElementById('employeePosition').value;
+            const dateOfJoining = document.getElementById('employeeDateOfJoining').value;
+
+            // Check if employee ID already exists
+            if (employees.find(emp => emp.id === id)) {
+                alert('Employee ID already exists. Please use a different ID.');
+                return;
+            }
+
+            const newEmployee = {
+                id: id,
+                name: name,
+                department: department,
+                position: position,
+                dateOfJoining: dateOfJoining,
+                dateAdded: new Date().toISOString()
+            };
+
+            employees.push(newEmployee);
+            localStorage.setItem('employees', JSON.stringify(employees));
+            
+            hideAddEmployeeModal();
+            renderEmployeeTable();
+            updateStats();
+        }
+
+        // Get today's date key
+        function getTodayKey() {
+            return new Date().toISOString().split('T')[0];
+        }
+
+        // Show login modal
+        function showLoginModal(employeeId) {
+            const employee = employees.find(emp => emp.id === employeeId);
+            if (!employee) return;
+            
+            currentEditingEmployee = employeeId;
+            document.getElementById('loginEmployeeName').textContent = employee.name;
+            document.getElementById('loginDate').textContent = new Date().toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            
+            // Set current time as default
+            const now = new Date();
+            document.getElementById('loginTime').value = now.toTimeString().slice(0, 5);
+            document.getElementById('loginStatus').value = 'present';
+            document.getElementById('loginNotes').value = '';
+            
+            document.getElementById('loginModal').classList.remove('hidden');
+            document.getElementById('loginModal').classList.add('flex');
+        }
+
+        // Hide login modal
+        function hideLoginModal() {
+            document.getElementById('loginModal').classList.add('hidden');
+            document.getElementById('loginModal').classList.remove('flex');
+            currentEditingEmployee = null;
+        }
+
+        // Record login
+        function recordLogin(event) {
+            event.preventDefault();
+            
+            const loginTime = document.getElementById('loginTime').value;
+            const status = document.getElementById('loginStatus').value;
+            const notes = document.getElementById('loginNotes').value;
+            
+            const today = getTodayKey();
+            if (!attendance[today]) {
+                attendance[today] = {};
+            }
+            
+            attendance[today][currentEditingEmployee] = {
+                status: status,
+                loginTime: loginTime,
+                logoutTime: null,
+                totalHours: null,
+                notes: notes,
+                timestamp: new Date().toISOString()
+            };
+            
+            localStorage.setItem('attendance', JSON.stringify(attendance));
+            hideLoginModal();
+            renderEmployeeTable();
+            updateStats();
+        }
+
+        // Show logout modal
+        function showLogoutModal(employeeId) {
+            const employee = employees.find(emp => emp.id === employeeId);
+            if (!employee) return;
+            
+            const today = getTodayKey();
+            const todayAttendance = attendance[today] && attendance[today][employeeId];
+            
+            if (!todayAttendance || !todayAttendance.loginTime) {
+                alert('Employee must login first before logout!');
+                return;
+            }
+            
+            currentEditingEmployee = employeeId;
+            document.getElementById('logoutEmployeeName').textContent = employee.name;
+            document.getElementById('logoutDate').textContent = new Date().toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            document.getElementById('logoutLoginTime').textContent = todayAttendance.loginTime;
+            
+            // Set current time as default
+            const now = new Date();
+            document.getElementById('logoutTime').value = now.toTimeString().slice(0, 5);
+            document.getElementById('logoutNotes').value = '';
+            
+            // Calculate total hours when logout time changes
+            document.getElementById('logoutTime').addEventListener('change', calculateTotalHours);
+            calculateTotalHours(); // Calculate initial value
+            
+            document.getElementById('logoutModal').classList.remove('hidden');
+            document.getElementById('logoutModal').classList.add('flex');
+        }
+
+        // Hide logout modal
+        function hideLogoutModal() {
+            document.getElementById('logoutModal').classList.add('hidden');
+            document.getElementById('logoutModal').classList.remove('flex');
+            document.getElementById('logoutTime').removeEventListener('change', calculateTotalHours);
+            currentEditingEmployee = null;
+        }
+
+        // Calculate total hours
+        function calculateTotalHours() {
+            const today = getTodayKey();
+            const todayAttendance = attendance[today] && attendance[today][currentEditingEmployee];
+            
+            if (!todayAttendance || !todayAttendance.loginTime) return;
+            
+            const loginTime = todayAttendance.loginTime;
+            const logoutTime = document.getElementById('logoutTime').value;
+            
+            if (loginTime && logoutTime) {
+                const login = new Date(`2000-01-01 ${loginTime}`);
+                const logout = new Date(`2000-01-01 ${logoutTime}`);
+                
+                let diffMs = logout - login;
+                if (diffMs < 0) {
+                    // Handle next day logout
+                    diffMs += 24 * 60 * 60 * 1000;
+                }
+                
+                const hours = Math.floor(diffMs / (1000 * 60 * 60));
+                const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+                
+                document.getElementById('totalHours').value = `${hours}h ${minutes}m`;
+            }
+        }
+
+        // Record logout
+        function recordLogout(event) {
+            event.preventDefault();
+            
+            const logoutTime = document.getElementById('logoutTime').value;
+            const notes = document.getElementById('logoutNotes').value;
+            const totalHours = document.getElementById('totalHours').value;
+            
+            const today = getTodayKey();
+            if (attendance[today] && attendance[today][currentEditingEmployee]) {
+                attendance[today][currentEditingEmployee].logoutTime = logoutTime;
+                attendance[today][currentEditingEmployee].totalHours = totalHours;
+                if (notes) {
+                    attendance[today][currentEditingEmployee].notes = 
+                        (attendance[today][currentEditingEmployee].notes || '') + 
+                        (attendance[today][currentEditingEmployee].notes ? ' | Logout: ' : '') + notes;
+                }
+                attendance[today][currentEditingEmployee].lastUpdated = new Date().toISOString();
+            }
+            
+            localStorage.setItem('attendance', JSON.stringify(attendance));
+            hideLogoutModal();
+            renderEmployeeTable();
+            updateStats();
+        }
+
+        // Show edit time modal
+        function showEditTimeModal(employeeId) {
+            const employee = employees.find(emp => emp.id === employeeId);
+            if (!employee) return;
+            
+            const today = getTodayKey();
+            const todayAttendance = attendance[today] && attendance[today][employeeId];
+            
+            currentEditingEmployee = employeeId;
+            document.getElementById('editEmployeeName').textContent = employee.name;
+            document.getElementById('editDate').textContent = new Date().toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            
+            // Pre-fill existing data
+            if (todayAttendance) {
+                document.getElementById('editLoginTime').value = todayAttendance.loginTime || '';
+                document.getElementById('editLogoutTime').value = todayAttendance.logoutTime || '';
+                document.getElementById('editStatus').value = todayAttendance.status || 'present';
+                document.getElementById('editNotes').value = todayAttendance.notes || '';
+            } else {
+                document.getElementById('editLoginTime').value = '';
+                document.getElementById('editLogoutTime').value = '';
+                document.getElementById('editStatus').value = 'present';
+                document.getElementById('editNotes').value = '';
+            }
+            
+            document.getElementById('editTimeModal').classList.remove('hidden');
+            document.getElementById('editTimeModal').classList.add('flex');
+        }
+
+        // Hide edit time modal
+        function hideEditTimeModal() {
+            document.getElementById('editTimeModal').classList.add('hidden');
+            document.getElementById('editTimeModal').classList.remove('flex');
+            currentEditingEmployee = null;
+        }
+
+        // Update attendance time
+        function updateAttendanceTime(event) {
+            event.preventDefault();
+            
+            const loginTime = document.getElementById('editLoginTime').value;
+            const logoutTime = document.getElementById('editLogoutTime').value;
+            const status = document.getElementById('editStatus').value;
+            const notes = document.getElementById('editNotes').value;
+            
+            const today = getTodayKey();
+            if (!attendance[today]) {
+                attendance[today] = {};
+            }
+            
+            let totalHours = null;
+            if (loginTime && logoutTime) {
+                const login = new Date(`2000-01-01 ${loginTime}`);
+                const logout = new Date(`2000-01-01 ${logoutTime}`);
+                
+                let diffMs = logout - login;
+                if (diffMs < 0) {
+                    diffMs += 24 * 60 * 60 * 1000;
+                }
+                
+                const hours = Math.floor(diffMs / (1000 * 60 * 60));
+                const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+                totalHours = `${hours}h ${minutes}m`;
+            }
+            
+            attendance[today][currentEditingEmployee] = {
+                status: status,
+                loginTime: loginTime || null,
+                logoutTime: logoutTime || null,
+                totalHours: totalHours,
+                notes: notes,
+                lastUpdated: new Date().toISOString()
+            };
+            
+            localStorage.setItem('attendance', JSON.stringify(attendance));
+            hideEditTimeModal();
+            renderEmployeeTable();
+            updateStats();
+        }
+
+        // Mark attendance (simplified for absent only)
+        function markAttendance(employeeId, status) {
+            const today = getTodayKey();
+            if (!attendance[today]) {
+                attendance[today] = {};
+            }
+            
+            attendance[today][employeeId] = {
+                status: status,
+                loginTime: null,
+                logoutTime: null,
+                totalHours: null,
+                notes: 'Marked as absent',
+                timestamp: new Date().toISOString()
+            };
+            
+            localStorage.setItem('attendance', JSON.stringify(attendance));
+            renderEmployeeTable();
+            updateStats();
+        }
+
+        // Mark all employees as present
+        function markAllPresent() {
+            const today = getTodayKey();
+            if (!attendance[today]) {
+                attendance[today] = {};
+            }
+            
+            employees.forEach(employee => {
+                if (!attendance[today][employee.id]) {
+                    attendance[today][employee.id] = {
+                        status: 'present',
+                        loginTime: new Date().toTimeString().slice(0, 5),
+                        logoutTime: null,
+                        totalHours: null,
+                        notes: 'Marked present automatically',
+                        timestamp: new Date().toISOString()
+                    };
+                }
+            });
+            
+            localStorage.setItem('attendance', JSON.stringify(attendance));
+            renderEmployeeTable();
+            updateStats();
+        }
+
+        // Remove employee
+        function removeEmployee(employeeId) {
+            if (confirm('Are you sure you want to remove this employee?')) {
+                employees = employees.filter(emp => emp.id !== employeeId);
+                localStorage.setItem('employees', JSON.stringify(employees));
+                renderEmployeeTable();
+                updateStats();
+            }
+        }
+
+        // Get employee attendance status for today
+        function getAttendanceStatus(employeeId) {
+            const today = getTodayKey();
+            return attendance[today] && attendance[today][employeeId] 
+                ? attendance[today][employeeId] 
+                : null;
+        }
+
+        // Render employee table
+        function renderEmployeeTable() {
+            const tbody = document.getElementById('employeeTableBody');
+            const mobileCards = document.getElementById('mobileEmployeeCards');
+            
+            if (tbody) tbody.innerHTML = '';
+            if (mobileCards) mobileCards.innerHTML = '';
+
+            if (employees.length === 0) {
+                const emptyMessage = `
+                    <div class="text-center py-12 text-gray-500">
+                        <div class="w-20 h-20 mx-auto mb-4 rounded-full gradient-primary flex items-center justify-center">
+                            <i class="fas fa-users text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold mb-2">No employees added yet</h3>
+                        <p class="text-sm mb-4">Start by adding your first employee to begin tracking attendance</p>
+                        <button onclick="showAddEmployeeModal()" class="btn-primary px-6 py-3 rounded-xl shadow-button">
+                            <i class="fas fa-user-plus mr-2"></i>Add First Employee
+                        </button>
+                    </div>
+                `;
+                
+                if (tbody) {
+                    tbody.innerHTML = `<tr><td colspan="5">${emptyMessage}</td></tr>`;
+                }
+                if (mobileCards) {
+                    mobileCards.innerHTML = emptyMessage;
+                }
+                return;
+            }
+
+            employees.forEach((employee, index) => {
+                const attendanceStatus = getAttendanceStatus(employee.id);
+                const statusBadge = getStatusBadge(attendanceStatus);
+                
+                // Desktop table row
+                if (tbody) {
+                    const row = document.createElement('tr');
+                    row.className = 'hover:bg-gray-50 transition-all duration-200';
+                    row.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 h-12 w-12">
+                                    <div class="h-12 w-12 rounded-xl gradient-primary flex items-center justify-center text-white font-bold text-lg shadow-button">
+                                        ${employee.name.charAt(0).toUpperCase()}
+                                    </div>
+                                </div>
+                                <div class="ml-4">
+                                    <div class="text-sm font-bold text-gray-900">${employee.name}</div>
+                                    <div class="text-sm text-gray-500">ID: ${employee.id}</div>
+                                    <div class="text-xs text-gray-400">Joined: ${new Date(employee.dateOfJoining).toLocaleDateString()}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-semibold text-gray-900">${employee.department}</div>
+                            <div class="text-sm text-gray-500">${employee.position}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            ${statusBadge}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <div class="space-y-1">
+                                ${attendanceStatus && attendanceStatus.loginTime ? 
+                                    `<div class="flex items-center text-green-600 font-medium"><i class="fas fa-sign-in-alt mr-2"></i>In: ${attendanceStatus.loginTime}</div>` : ''}
+                                ${attendanceStatus && attendanceStatus.logoutTime ? 
+                                    `<div class="flex items-center text-red-600 font-medium"><i class="fas fa-sign-out-alt mr-2"></i>Out: ${attendanceStatus.logoutTime}</div>` : ''}
+                                ${attendanceStatus && attendanceStatus.totalHours ? 
+                                    `<div class="flex items-center text-blue-600 font-bold"><i class="fas fa-clock mr-2"></i>${attendanceStatus.totalHours}</div>` : ''}
+                                ${!attendanceStatus || (!attendanceStatus.loginTime && !attendanceStatus.logoutTime) ? 
+                                    '<div class="text-gray-400 italic">No time recorded</div>' : ''}
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <div class="flex flex-wrap gap-2">
+                                <button onclick="showLoginModal('${employee.id}')" 
+                                    class="bg-blue-100 hover:bg-blue-200 text-blue-800 px-3 py-1 rounded-full text-xs font-semibold transition-all duration-200 shadow-sm hover:shadow-md">
+                                    <i class="fas fa-sign-in-alt mr-1"></i>Login
+                                </button>
+                                <button onclick="showLogoutModal('${employee.id}')" 
+                                    class="bg-purple-100 hover:bg-purple-200 text-purple-800 px-3 py-1 rounded-full text-xs font-semibold transition-all duration-200 shadow-sm hover:shadow-md">
+                                    <i class="fas fa-sign-out-alt mr-1"></i>Logout
+                                </button>
+                                <button onclick="markAttendance('${employee.id}', 'absent')" 
+                                    class="bg-red-100 hover:bg-red-200 text-red-800 px-3 py-1 rounded-full text-xs font-semibold transition-all duration-200 shadow-sm hover:shadow-md">
+                                    <i class="fas fa-times mr-1"></i>Absent
+                                </button>
+                                <button onclick="showEditTimeModal('${employee.id}')" 
+                                    class="bg-yellow-100 hover:bg-yellow-200 text-yellow-800 px-3 py-1 rounded-full text-xs font-semibold transition-all duration-200 shadow-sm hover:shadow-md">
+                                    <i class="fas fa-edit mr-1"></i>Edit
+                                </button>
+                                <button onclick="removeEmployee('${employee.id}')" 
+                                    class="bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-1 rounded-full text-xs font-semibold transition-all duration-200 shadow-sm hover:shadow-md">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                }
+
+                // Mobile card
+                if (mobileCards) {
+                    const card = document.createElement('div');
+                    card.className = 'rich-card p-4 hover-lift animate-fade-in';
+                    card.style.animationDelay = `${index * 0.1}s`;
+                    card.innerHTML = `
+                        <div class="flex items-start justify-between mb-3">
+                            <div class="flex items-center">
+                                <div class="h-12 w-12 rounded-xl gradient-primary flex items-center justify-center text-white font-bold text-lg shadow-button mr-3">
+                                    ${employee.name.charAt(0).toUpperCase()}
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-gray-900">${employee.name}</h3>
+                                    <p class="text-sm text-gray-500">${employee.department}</p>
+                                    <p class="text-xs text-gray-400">ID: ${employee.id}</p>
+                                </div>
+                            </div>
+                            ${statusBadge}
+                        </div>
+                        
+                        <div class="mb-4 p-3 bg-gray-50 rounded-lg">
+                            <div class="grid grid-cols-2 gap-2 text-sm">
+                                <div>
+                                    <span class="text-gray-500">Position:</span>
+                                    <div class="font-medium">${employee.position}</div>
+                                </div>
+                                <div>
+                                    <span class="text-gray-500">Joined:</span>
+                                    <div class="font-medium">${new Date(employee.dateOfJoining).toLocaleDateString()}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        ${attendanceStatus && (attendanceStatus.loginTime || attendanceStatus.logoutTime) ? `
+                            <div class="mb-4 p-3 bg-blue-50 rounded-lg">
+                                <h4 class="text-sm font-semibold text-blue-800 mb-2">Today's Times</h4>
+                                <div class="space-y-1 text-sm">
+                                    ${attendanceStatus.loginTime ? 
+                                        `<div class="flex items-center text-green-600 font-medium"><i class="fas fa-sign-in-alt mr-2"></i>Login: ${attendanceStatus.loginTime}</div>` : ''}
+                                    ${attendanceStatus.logoutTime ? 
+                                        `<div class="flex items-center text-red-600 font-medium"><i class="fas fa-sign-out-alt mr-2"></i>Logout: ${attendanceStatus.logoutTime}</div>` : ''}
+                                    ${attendanceStatus.totalHours ? 
+                                        `<div class="flex items-center text-blue-600 font-bold"><i class="fas fa-clock mr-2"></i>Total: ${attendanceStatus.totalHours}</div>` : ''}
+                                </div>
+                            </div>
+                        ` : ''}
+
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="showLoginModal('${employee.id}')" 
+                                class="bg-blue-100 hover:bg-blue-200 text-blue-800 px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200 shadow-sm hover:shadow-md">
+                                <i class="fas fa-sign-in-alt mr-1"></i>Login
+                            </button>
+                            <button onclick="showLogoutModal('${employee.id}')" 
+                                class="bg-purple-100 hover:bg-purple-200 text-purple-800 px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200 shadow-sm hover:shadow-md">
+                                <i class="fas fa-sign-out-alt mr-1"></i>Logout
+                            </button>
+                            <button onclick="markAttendance('${employee.id}', 'absent')" 
+                                class="bg-red-100 hover:bg-red-200 text-red-800 px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200 shadow-sm hover:shadow-md">
+                                <i class="fas fa-times mr-1"></i>Absent
+                            </button>
+                            <button onclick="showEditTimeModal('${employee.id}')" 
+                                class="bg-yellow-100 hover:bg-yellow-200 text-yellow-800 px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200 shadow-sm hover:shadow-md">
+                                <i class="fas fa-edit mr-1"></i>Edit
+                            </button>
+                        </div>
+                    `;
+                    mobileCards.appendChild(card);
+                }
+            });
+        }
+
+        // Get status badge HTML
+        function getStatusBadge(attendanceStatus) {
+            if (!attendanceStatus) {
+                return '<span class="px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full bg-gray-100 text-gray-800 shadow-sm">Not Marked</span>';
+            }
+
+            const statusConfig = {
+                present: { class: 'bg-green-100 text-green-800', icon: 'fa-check-circle', text: 'Present' },
+                absent: { class: 'bg-red-100 text-red-800', icon: 'fa-times-circle', text: 'Absent' },
+                late: { class: 'bg-yellow-100 text-yellow-800', icon: 'fa-clock', text: 'Late' }
+            };
+
+            const config = statusConfig[attendanceStatus.status];
+            return `<span class="px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full ${config.class} shadow-sm">
+                <i class="fas ${config.icon} mr-1"></i>${config.text}
+            </span>`;
+        }
+
+        // Update statistics
+        function updateStats() {
+            const today = getTodayKey();
+            const todayAttendance = attendance[today] || {};
+            
+            let presentCount = 0;
+            let absentCount = 0;
+            let lateCount = 0;
+
+            employees.forEach(employee => {
+                const status = todayAttendance[employee.id];
+                if (status) {
+                    switch (status.status) {
+                        case 'present': presentCount++; break;
+                        case 'absent': absentCount++; break;
+                        case 'late': lateCount++; break;
+                    }
+                }
+            });
+
+            document.getElementById('totalEmployees').textContent = employees.length;
+            document.getElementById('presentCount').textContent = presentCount;
+            document.getElementById('absentCount').textContent = absentCount;
+            document.getElementById('lateCount').textContent = lateCount;
+        }
+
+        // Setup search functionality
+        function setupSearch() {
+            const searchInputs = ['searchInput', 'mobileSearchInput'];
+            
+            searchInputs.forEach(inputId => {
+                const searchInput = document.getElementById(inputId);
+                if (searchInput) {
+                    searchInput.addEventListener('input', function() {
+                        const searchTerm = this.value.toLowerCase();
+                        
+                        // Desktop table search
+                        const rows = document.querySelectorAll('#employeeTableBody tr');
+                        rows.forEach(row => {
+                            const text = row.textContent.toLowerCase();
+                            row.style.display = text.includes(searchTerm) ? '' : 'none';
+                        });
+                        
+                        // Mobile cards search
+                        const cards = document.querySelectorAll('#mobileEmployeeCards > div');
+                        cards.forEach(card => {
+                            const text = card.textContent.toLowerCase();
+                            card.style.display = text.includes(searchTerm) ? '' : 'none';
+                        });
+                    });
+                }
+            });
+        }
+
+        // Monthly calendar functions
+        function updateMonthDisplay() {
+            const monthNames = ["January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"];
+            const monthDisplay = `${monthNames[currentViewDate.getMonth()]} ${currentViewDate.getFullYear()}`;
+            document.getElementById('currentMonth').textContent = monthDisplay;
+        }
+
+        function previousMonth() {
+            currentViewDate.setMonth(currentViewDate.getMonth() - 1);
+            updateMonthDisplay();
+            if (activeTab === 'monthly') renderMonthlyCalendar();
+        }
+
+        function nextMonth() {
+            currentViewDate.setMonth(currentViewDate.getMonth() + 1);
+            updateMonthDisplay();
+            if (activeTab === 'monthly') renderMonthlyCalendar();
+        }
+
+        function renderMonthlyCalendar() {
+            const calendar = document.getElementById('monthlyCalendar');
+            const year = currentViewDate.getFullYear();
+            const month = currentViewDate.getMonth();
+            
+            // Get days in month
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const firstDay = new Date(year, month, 1).getDay();
+            
+            let calendarHTML = `
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse min-w-[800px]">
+                        <thead>
+                            <tr class="bg-gradient-to-r from-blue-50 to-purple-50">
+                                <th class="border border-gray-200 px-3 py-3 text-xs font-bold text-gray-700 uppercase min-w-[150px]">Employee</th>
+            `;
+            
+            // Add day headers
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(year, month, day - 1);
+                const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
+                calendarHTML += `<th class="border border-gray-200 px-1 py-3 text-xs font-bold text-gray-700 text-center min-w-[35px]">
+                    <div>${day}</div>
+                    <div class="text-xs opacity-75">${dayName}</div>
+                </th>`;
+            }
+            calendarHTML += '</tr></thead><tbody>';
+            
+            // Add employee rows
+            employees.forEach((employee, index) => {
+                calendarHTML += `
+                    <tr class="hover:bg-gray-50 animate-fade-in" style="animation-delay: ${index * 0.05}s">
+                        <td class="border border-gray-200 px-3 py-3 font-semibold text-sm bg-gray-50">
+                            <div class="flex items-center">
+                                <div class="h-8 w-8 rounded-lg gradient-primary flex items-center justify-center text-white text-xs font-bold mr-2">
+                                    ${employee.name.charAt(0).toUpperCase()}
+                                </div>
+                                <div>
+                                    <div class="font-bold">${employee.name}</div>
+                                    <div class="text-xs text-gray-500">${employee.department}</div>
+                                </div>
+                            </div>
+                        </td>
+                `;
+                
+                // Add attendance cells for each day
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                    const dayAttendance = attendance[dateKey] && attendance[dateKey][employee.id];
+                    
+                    let cellClass = 'border border-gray-200 px-1 py-2 text-center text-xs';
+                    let cellContent = '';
+                    
+                    if (dayAttendance) {
+                        switch (dayAttendance.status) {
+                            case 'present':
+                                cellClass += ' bg-green-100';
+                                cellContent = '<i class="fas fa-check text-green-600 text-sm"></i>';
+                                break;
+                            case 'absent':
+                                cellClass += ' bg-red-100';
+                                cellContent = '<i class="fas fa-times text-red-600 text-sm"></i>';
+                                break;
+                            case 'late':
+                                cellClass += ' bg-yellow-100';
+                                cellContent = '<i class="fas fa-clock text-yellow-600 text-sm"></i>';
+                                break;
+                        }
+                    } else {
+                        cellContent = '<span class="text-gray-300">-</span>';
+                    }
+                    
+                    calendarHTML += `<td class="${cellClass}">${cellContent}</td>`;
+                }
+                
+                calendarHTML += '</tr>';
+            });
+            
+            calendarHTML += '</tbody></table></div>';
+            calendar.innerHTML = calendarHTML;
+        }
+
+        // Report functions
+        function populateReportMonths() {
+            const select = document.getElementById('reportMonth');
+            if (!select) return;
+            
+            const currentDate = new Date();
+            const monthNames = ["January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"];
+            
+            // Add current month and previous 11 months
+            for (let i = 0; i < 12; i++) {
+                const date = new Date(currentDate.getFullYear(), currentDate.getMonth() - i, 1);
+                const value = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+                const text = `${monthNames[date.getMonth()]} ${date.getFullYear()}`;
+                
+                const option = document.createElement('option');
+                option.value = value;
+                option.textContent = text;
+                if (i === 0) option.selected = true;
+                select.appendChild(option);
+            }
+        }
+
+        function generateReport() {
+            const reportContainer = document.getElementById('monthlyReport');
+            const selectedMonth = document.getElementById('reportMonth').value;
+            
+            if (!selectedMonth) return;
+            
+            const [year, month] = selectedMonth.split('-');
+            const daysInMonth = new Date(year, month, 0).getDate();
+            
+            let reportHTML = `
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse">
+                        <thead>
+                            <tr class="bg-gradient-to-r from-purple-50 to-pink-50">
+                                <th class="border border-gray-200 px-4 py-3 text-left text-sm font-bold text-gray-700">Employee</th>
+                                <th class="border border-gray-200 px-4 py-3 text-center text-sm font-bold text-gray-700">Total Days</th>
+                                <th class="border border-gray-200 px-4 py-3 text-center text-sm font-bold text-gray-700">Present</th>
+                                <th class="border border-gray-200 px-4 py-3 text-center text-sm font-bold text-gray-700">Absent</th>
+                                <th class="border border-gray-200 px-4 py-3 text-center text-sm font-bold text-gray-700">Late</th>
+                                <th class="border border-gray-200 px-4 py-3 text-center text-sm font-bold text-gray-700">Attendance %</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            employees.forEach((employee, index) => {
+                let presentDays = 0;
+                let absentDays = 0;
+                let lateDays = 0;
+                let totalMarkedDays = 0;
+                
+                // Count attendance for each day of the month
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const dateKey = `${year}-${month.padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                    const dayAttendance = attendance[dateKey] && attendance[dateKey][employee.id];
+                    
+                    if (dayAttendance) {
+                        totalMarkedDays++;
+                        switch (dayAttendance.status) {
+                            case 'present': presentDays++; break;
+                            case 'absent': absentDays++; break;
+                            case 'late': lateDays++; break;
+                        }
+                    }
+                }
+                
+                const attendancePercentage = totalMarkedDays > 0 ? 
+                    Math.round(((presentDays + lateDays) / totalMarkedDays) * 100) : 0;
+                
+                let percentageClass = 'text-gray-600';
+                let percentageBg = 'bg-gray-100';
+                if (attendancePercentage >= 95) {
+                    percentageClass = 'text-green-700 font-bold';
+                    percentageBg = 'bg-green-100';
+                } else if (attendancePercentage >= 85) {
+                    percentageClass = 'text-blue-700 font-bold';
+                    percentageBg = 'bg-blue-100';
+                } else if (attendancePercentage >= 75) {
+                    percentageClass = 'text-yellow-700 font-bold';
+                    percentageBg = 'bg-yellow-100';
+                } else if (attendancePercentage < 75) {
+                    percentageClass = 'text-red-700 font-bold';
+                    percentageBg = 'bg-red-100';
+                }
+                
+                reportHTML += `
+                    <tr class="hover:bg-gray-50 animate-fade-in" style="animation-delay: ${index * 0.1}s">
+                        <td class="border border-gray-200 px-4 py-3">
+                            <div class="flex items-center">
+                                <div class="h-10 w-10 rounded-xl gradient-primary flex items-center justify-center text-white text-sm font-bold mr-3">
+                                    ${employee.name.charAt(0).toUpperCase()}
+                                </div>
+                                <div>
+                                    <div class="font-bold text-gray-900">${employee.name}</div>
+                                    <div class="text-sm text-gray-500">${employee.department}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="border border-gray-200 px-4 py-3 text-center font-bold">${daysInMonth}</td>
+                        <td class="border border-gray-200 px-4 py-3 text-center">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-green-100 text-green-800">
+                                ${presentDays}
+                            </span>
+                        </td>
+                        <td class="border border-gray-200 px-4 py-3 text-center">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-red-100 text-red-800">
+                                ${absentDays}
+                            </span>
+                        </td>
+                        <td class="border border-gray-200 px-4 py-3 text-center">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-yellow-100 text-yellow-800">
+                                ${lateDays}
+                            </span>
+                        </td>
+                        <td class="border border-gray-200 px-4 py-3 text-center">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm ${percentageClass} ${percentageBg}">
+                                ${attendancePercentage}%
+                            </span>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            reportHTML += '</tbody></table></div>';
+            reportContainer.innerHTML = reportHTML;
+        }
+
+        function exportReport(format = 'csv') {
+            const selectedMonth = document.getElementById('reportMonth').value;
+            if (!selectedMonth) {
+                alert('Please select a month to export');
+                return;
+            }
+            
+            const [year, month] = selectedMonth.split('-');
+            const monthNames = ["January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"];
+            const monthName = monthNames[parseInt(month) - 1];
+            const daysInMonth = new Date(year, month, 0).getDate();
+            
+            if (format === 'excel') {
+                try {
+                    // Create Excel workbook
+                    const wb = XLSX.utils.book_new();
+                    
+                    // ===== SHEET 1: MONTHLY SUMMARY =====
+                    const summaryData = [
+                        ['EMPLOYEE ATTENDANCE REPORT'],
+                        [`Month: ${monthName} ${year}`],
+                        [`Generated on: ${new Date().toLocaleDateString('en-US', { 
+                            weekday: 'long', 
+                            year: 'numeric', 
+                            month: 'long', 
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        })}`],
+                        [`Total Employees: ${employees.length}`],
+                        [''],
+                        ['Employee Name', 'Employee ID', 'Department', 'Position', 'Date of Joining', 'Days Since Joining', 'Total Working Days', 'Present Days', 'Absent Days', 'Late Days', 'Attendance Rate', 'Performance Status']
+                    ];
+                    
+                    employees.forEach(employee => {
+                        let presentDays = 0;
+                        let absentDays = 0;
+                        let lateDays = 0;
+                        let totalMarkedDays = 0;
+                        
+                        // Calculate attendance for the month
+                        for (let day = 1; day <= daysInMonth; day++) {
+                            const dateKey = `${year}-${month.padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                            const dayAttendance = attendance[dateKey] && attendance[dateKey][employee.id];
+                            
+                            if (dayAttendance) {
+                                totalMarkedDays++;
+                                switch (dayAttendance.status) {
+                                    case 'present': presentDays++; break;
+                                    case 'absent': absentDays++; break;
+                                    case 'late': lateDays++; break;
+                                }
+                            }
+                        }
+                        
+                        const attendancePercentage = totalMarkedDays > 0 ? 
+                            Math.round(((presentDays + lateDays) / totalMarkedDays) * 100) : 0;
+                        
+                        // Calculate days since joining
+                        const joiningDate = new Date(employee.dateOfJoining);
+                        const lastDayOfMonth = new Date(year, month, 0);
+                        const daysSinceJoining = Math.max(0, Math.floor((lastDayOfMonth - joiningDate) / (1000 * 60 * 60 * 24)));
+                        
+                        // Performance status
+                        let performanceStatus = '';
+                        if (attendancePercentage >= 95) performanceStatus = 'Excellent';
+                        else if (attendancePercentage >= 90) performanceStatus = 'Good';
+                        else if (attendancePercentage >= 80) performanceStatus = 'Average';
+                        else if (attendancePercentage >= 70) performanceStatus = 'Below Average';
+                        else performanceStatus = 'Poor';
+                        
+                        summaryData.push([
+                            employee.name,
+                            employee.id,
+                            employee.department,
+                            employee.position,
+                            new Date(employee.dateOfJoining).toLocaleDateString('en-US'),
+                            daysSinceJoining,
+                            daysInMonth,
+                            presentDays,
+                            absentDays,
+                            lateDays,
+                            `${attendancePercentage}%`,
+                            performanceStatus
+                        ]);
+                    });
+                    
+                    const summaryWs = XLSX.utils.aoa_to_sheet(summaryData);
+                    
+                    // Set column widths for summary sheet
+                    summaryWs['!cols'] = [
+                        {wch: 25}, // Employee Name
+                        {wch: 15}, // Employee ID
+                        {wch: 18}, // Department
+                        {wch: 20}, // Position
+                        {wch: 15}, // Date of Joining
+                        {wch: 18}, // Days Since Joining
+                        {wch: 18}, // Total Working Days
+                        {wch: 15}, // Present Days
+                        {wch: 15}, // Absent Days
+                        {wch: 12}, // Late Days
+                        {wch: 18}, // Attendance Rate
+                        {wch: 18}  // Performance Status
+                    ];
+                    
+                    XLSX.utils.book_append_sheet(wb, summaryWs, "Monthly Summary");
+                    
+                    // Save the Excel file
+                    const fileName = `Attendance-Report-${monthName}-${year}.xlsx`;
+                    XLSX.writeFile(wb, fileName);
+                    
+                    // Show success message
+                    alert(`Excel report "${fileName}" has been downloaded successfully!`);
+                    
+                } catch (error) {
+                    console.error('Excel export error:', error);
+                    alert('Error creating Excel file. Please try again or use CSV export.');
+                }
+                
+            } else {
+                // CSV export
+                let csvContent = `Employee Attendance Report - ${monthName} ${year}\n\n`;
+                csvContent += "Employee Name,Employee ID,Department,Position,Date of Joining,Total Days,Present,Absent,Late,Attendance %,Days Since Joining\n";
+                
+                employees.forEach(employee => {
+                    let presentDays = 0;
+                    let absentDays = 0;
+                    let lateDays = 0;
+                    let totalMarkedDays = 0;
+                    
+                    for (let day = 1; day <= daysInMonth; day++) {
+                        const dateKey = `${year}-${month.padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                        const dayAttendance = attendance[dateKey] && attendance[dateKey][employee.id];
+                        
+                        if (dayAttendance) {
+                            totalMarkedDays++;
+                            switch (dayAttendance.status) {
+                                case 'present': presentDays++; break;
+                                case 'absent': absentDays++; break;
+                                case 'late': lateDays++; break;
+                            }
+                        }
+                    }
+                    
+                    const attendancePercentage = totalMarkedDays > 0 ? 
+                        Math.round(((presentDays + lateDays) / totalMarkedDays) * 100) : 0;
+                    
+                    const joiningDate = new Date(employee.dateOfJoining);
+                    const lastDayOfMonth = new Date(year, month, 0);
+                    const daysSinceJoining = Math.floor((lastDayOfMonth - joiningDate) / (1000 * 60 * 60 * 24));
+                    
+                    csvContent += `"${employee.name}","${employee.id}","${employee.department}","${employee.position}","${new Date(employee.dateOfJoining).toLocaleDateString()}",${daysInMonth},${presentDays},${absentDays},${lateDays},${attendancePercentage}%,${daysSinceJoining}\n`;
+                });
+                
+                // Create and download CSV file
+                const blob = new Blob([csvContent], { type: 'text/csv' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `attendance-report-${monthName}-${year}.csv`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            }
+        }
+
+        // Historical Data Functions
+        function populateEmployeeDropdown() {
+            const select = document.getElementById('historyEmployee');
+            if (!select) return;
+            
+            select.innerHTML = '<option value="">All Employees</option>';
+            
+            employees.forEach(employee => {
+                const option = document.createElement('option');
+                option.value = employee.id;
+                option.textContent = `${employee.name} (${employee.id})`;
+                select.appendChild(option);
+            });
+        }
+
+        function loadAllHistoryData() {
+            const historyContainer = document.getElementById('historyData');
+            
+            // Get all attendance dates
+            const allDates = Object.keys(attendance).sort().reverse();
+            
+            if (allDates.length === 0) {
+                historyContainer.innerHTML = `
+                    <div class="text-center py-12 text-gray-500">
+                        <div class="w-20 h-20 mx-auto mb-4 rounded-full gradient-primary flex items-center justify-center">
+                            <i class="fas fa-calendar-times text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold mb-2">No attendance data found</h3>
+                        <p class="text-sm mb-4">Start marking attendance to see historical data</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let historyHTML = `
+                <div class="mb-6 p-4 bg-gradient-to-r from-indigo-50 to-cyan-50 rounded-xl">
+                    <h3 class="font-bold text-indigo-800 mb-2">Data Storage Information</h3>
+                    <p class="text-sm text-indigo-700">All attendance data is permanently stored in your browser's local storage. You can access historical data anytime, even after closing and reopening the application.</p>
+                    <p class="text-sm text-indigo-700 mt-1"><strong>Total Records:</strong> ${allDates.length} days of attendance data stored</p>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse">
+                        <thead>
+                            <tr class="bg-gradient-to-r from-indigo-50 to-cyan-50">
+                                <th class="border border-gray-200 px-4 py-3 text-left text-sm font-bold text-gray-700">Date</th>
+                                <th class="border border-gray-200 px-4 py-3 text-left text-sm font-bold text-gray-700">Employee</th>
+                                <th class="border border-gray-200 px-4 py-3 text-left text-sm font-bold text-gray-700">Department</th>
+                                <th class="border border-gray-200 px-4 py-3 text-center text-sm font-bold text-gray-700">Status</th>
+                                <th class="border border-gray-200 px-4 py-3 text-center text-sm font-bold text-gray-700">Time</th>
+                                <th class="border border-gray-200 px-4 py-3 text-center text-sm font-bold text-gray-700">Days Since Joining</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            let recordIndex = 0;
+            allDates.forEach(date => {
+                const dayAttendance = attendance[date];
+                Object.keys(dayAttendance).forEach(employeeId => {
+                    const employee = employees.find(emp => emp.id === employeeId);
+                    if (!employee) return;
+
+                    const record = dayAttendance[employeeId];
+                    const daysSinceJoining = Math.floor((new Date(date) - new Date(employee.dateOfJoining)) / (1000 * 60 * 60 * 24));
+                    
+                    let statusBadge = '';
+                    switch (record.status) {
+                        case 'present':
+                            statusBadge = '<span class="px-3 py-1 text-xs font-bold bg-green-100 text-green-800 rounded-full shadow-sm"><i class="fas fa-check mr-1"></i>Present</span>';
+                            break;
+                        case 'absent':
+                            statusBadge = '<span class="px-3 py-1 text-xs font-bold bg-red-100 text-red-800 rounded-full shadow-sm"><i class="fas fa-times mr-1"></i>Absent</span>';
+                            break;
+                        case 'late':
+                            statusBadge = '<span class="px-3 py-1 text-xs font-bold bg-yellow-100 text-yellow-800 rounded-full shadow-sm"><i class="fas fa-clock mr-1"></i>Late</span>';
+                            break;
+                    }
+
+                    historyHTML += `
+                        <tr class="hover:bg-gray-50 animate-fade-in" style="animation-delay: ${recordIndex * 0.02}s">
+                            <td class="border border-gray-200 px-4 py-3 text-sm font-semibold">${new Date(date).toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })}</td>
+                            <td class="border border-gray-200 px-4 py-3">
+                                <div class="flex items-center">
+                                    <div class="h-8 w-8 rounded-lg gradient-primary flex items-center justify-center text-white text-xs font-bold mr-2">
+                                        ${employee.name.charAt(0).toUpperCase()}
+                                    </div>
+                                    <div>
+                                        <div class="text-sm font-bold text-gray-900">${employee.name}</div>
+                                        <div class="text-xs text-gray-500">ID: ${employee.id}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="border border-gray-200 px-4 py-3 text-sm font-semibold text-gray-900">${employee.department}</td>
+                            <td class="border border-gray-200 px-4 py-3 text-center">${statusBadge}</td>
+                            <td class="border border-gray-200 px-4 py-3 text-center text-sm font-semibold text-gray-600">${record.loginTime || record.time || '-'}</td>
+                            <td class="border border-gray-200 px-4 py-3 text-center text-sm font-semibold text-gray-600">${daysSinceJoining} days</td>
+                        </tr>
+                    `;
+                    recordIndex++;
+                });
+            });
+
+            historyHTML += '</tbody></table></div>';
+            historyContainer.innerHTML = historyHTML;
+        }
+
+        function loadEmployeeHistory() {
+            const selectedEmployeeId = document.getElementById('historyEmployee').value;
+            
+            if (!selectedEmployeeId) {
+                loadAllHistoryData();
+                return;
+            }
+
+            const employee = employees.find(emp => emp.id === selectedEmployeeId);
+            if (!employee) return;
+
+            const historyContainer = document.getElementById('historyData');
+            const allDates = Object.keys(attendance).sort().reverse();
+            
+            let employeeRecords = [];
+            allDates.forEach(date => {
+                if (attendance[date] && attendance[date][selectedEmployeeId]) {
+                    employeeRecords.push({
+                        date: date,
+                        record: attendance[date][selectedEmployeeId]
+                    });
+                }
+            });
+
+            if (employeeRecords.length === 0) {
+                historyContainer.innerHTML = `
+                    <div class="text-center py-12 text-gray-500">
+                        <div class="w-20 h-20 mx-auto mb-4 rounded-full gradient-primary flex items-center justify-center">
+                            <i class="fas fa-user-clock text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold mb-2">No attendance records found for ${employee.name}</h3>
+                        <p class="text-sm mb-4">This employee's attendance data will appear here once marked</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Calculate statistics
+            let presentCount = 0, absentCount = 0, lateCount = 0;
+            employeeRecords.forEach(record => {
+                switch (record.record.status) {
+                    case 'present': presentCount++; break;
+                    case 'absent': absentCount++; break;
+                    case 'late': lateCount++; break;
+                }
+            });
+
+            const totalRecords = employeeRecords.length;
+            const attendanceRate = Math.round(((presentCount + lateCount) / totalRecords) * 100);
+
+            let historyHTML = `
+                <div class="mb-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                    <div class="lg:col-span-2 bg-gradient-to-r from-blue-50 to-purple-50 p-4 rounded-xl">
+                        <h4 class="font-bold text-blue-800 mb-2">Employee Details</h4>
+                        <p class="text-sm font-semibold text-blue-700">${employee.name}</p>
+                        <p class="text-xs text-blue-600">${employee.department} - ${employee.position}</p>
+                        <p class="text-xs text-blue-600">Joined: ${new Date(employee.dateOfJoining).toLocaleDateString()}</p>
+                    </div>
+                    <div class="bg-green-50 p-4 rounded-xl text-center">
+                        <p class="text-2xl font-bold text-green-600">${presentCount}</p>
+                        <p class="text-sm font-semibold text-green-700">Present Days</p>
+                    </div>
+                    <div class="bg-red-50 p-4 rounded-xl text-center">
+                        <p class="text-2xl font-bold text-red-600">${absentCount}</p>
+                        <p class="text-sm font-semibold text-red-700">Absent Days</p>
+                    </div>
+                    <div class="bg-yellow-50 p-4 rounded-xl text-center">
+                        <p class="text-2xl font-bold text-yellow-600">${lateCount}</p>
+                        <p class="text-sm font-semibold text-yellow-700">Late Days</p>
+                    </div>
+                </div>
+                <div class="mb-4 p-4 bg-gray-50 rounded-xl">
+                    <p class="text-sm text-gray-700"><strong>Total Records:</strong> ${totalRecords} days | <strong>Attendance Rate:</strong> <span class="font-bold ${attendanceRate >= 90 ? 'text-green-600' : attendanceRate >= 75 ? 'text-yellow-600' : 'text-red-600'}">${attendanceRate}%</span></p>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse">
+                        <thead>
+                            <tr class="bg-gradient-to-r from-blue-50 to-purple-50">
+                                <th class="border border-gray-200 px-4 py-3 text-left text-sm font-bold text-gray-700">Date</th>
+                                <th class="border border-gray-200 px-4 py-3 text-center text-sm font-bold text-gray-700">Day</th>
+                                <th class="border border-gray-200 px-4 py-3 text-center text-sm font-bold text-gray-700">Status</th>
+                                <th class="border border-gray-200 px-4 py-3 text-center text-sm font-bold text-gray-700">Time</th>
+                                <th class="border border-gray-200 px-4 py-3 text-center text-sm font-bold text-gray-700">Days Since Joining</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            employeeRecords.forEach((item, index) => {
+                const date = new Date(item.date);
+                const daysSinceJoining = Math.floor((date - new Date(employee.dateOfJoining)) / (1000 * 60 * 60 * 24));
+                
+                let statusBadge = '';
+                switch (item.record.status) {
+                    case 'present':
+                        statusBadge = '<span class="px-3 py-1 text-xs font-bold bg-green-100 text-green-800 rounded-full shadow-sm"><i class="fas fa-check mr-1"></i>Present</span>';
+                        break;
+                    case 'absent':
+                        statusBadge = '<span class="px-3 py-1 text-xs font-bold bg-red-100 text-red-800 rounded-full shadow-sm"><i class="fas fa-times mr-1"></i>Absent</span>';
+                        break;
+                    case 'late':
+                        statusBadge = '<span class="px-3 py-1 text-xs font-bold bg-yellow-100 text-yellow-800 rounded-full shadow-sm"><i class="fas fa-clock mr-1"></i>Late</span>';
+                        break;
+                }
+
+                historyHTML += `
+                    <tr class="hover:bg-gray-50 animate-fade-in" style="animation-delay: ${index * 0.05}s">
+                        <td class="border border-gray-200 px-4 py-3 text-sm font-semibold">${date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</td>
+                        <td class="border border-gray-200 px-4 py-3 text-center text-sm font-semibold text-gray-600">${date.toLocaleDateString('en-US', { weekday: 'long' })}</td>
+                        <td class="border border-gray-200 px-4 py-3 text-center">${statusBadge}</td>
+                        <td class="border border-gray-200 px-4 py-3 text-center text-sm font-semibold text-gray-600">${item.record.loginTime || item.record.time || '-'}</td>
+                        <td class="border border-gray-200 px-4 py-3 text-center text-sm font-semibold text-gray-600">${daysSinceJoining} days</td>
+                    </tr>
+                `;
+            });
+
+            historyHTML += '</tbody<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'967b738332dadccb',t:'MTc1Mzk0NzY2NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
